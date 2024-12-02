@@ -4,12 +4,12 @@ import os
 input_name = "input_1.csv"
 input_path = "inputs/" + input_name
 
-input = pd.read_csv(os.path.abspath(input_path),
-                    sep='\s+',
-                    header=None)  
+input_data = pd.read_csv(os.path.abspath(input_path),
+                         sep='\s+',
+                         header=None)
 
-list_1 = list(input[0])
-list_2 = list(input[1])
+list_1 = list(input_data[0])
+list_2 = list(input_data[1])
 
 list_1 = sorted(list_1)
 list_2 = sorted(list_2)
