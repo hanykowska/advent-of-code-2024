@@ -34,4 +34,9 @@ print(len(input_data))
 rules = input_data[0].split("\n")
 updates = input_data[1].split("\n")
 
+rules = [rule.split("|") for rule in rules]
+rules = [[int(rule[0]), int(rule[1])] for rule in rules]
 
+updates = [update.split(",") for update in updates]
+updates = [[int(page) for page in update] for update in updates]
+print(updates)
