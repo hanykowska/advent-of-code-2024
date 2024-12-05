@@ -1,5 +1,20 @@
 import os
 
+def intersection_count(lst1, lst2):
+    return len(list(set(lst1) & set(lst2)))
+
+
+def fix_update(rules_dict, update):
+    counts = {}
+    for page in update:
+        try:
+            counts[page] = intersection_count(rules_dict[page],
+                                              [x for x in update if x != page])
+        except KeyError:
+            counts[page] = 0
+    for page in counts:
+        update[len(update) - 1 - counts[page]] = page
+    return update
 
 input_name = "input_5.txt"
 input_path = "inputs/" + input_name
@@ -61,6 +76,7 @@ for rule in rules:
 
 
 valid_updates = []
+fixed_updates = []
 for i,update in enumerate(updates):
     update_ok = 1
     for m, val_m in enumerate(update):
@@ -79,8 +95,13 @@ for i,update in enumerate(updates):
         
     if update_ok:
         valid_updates.append([i,update[len(update)//2]])
+    else:
+        new_update = fix_update(rules_dict, update)
+        fixed_updates.append([i,new_update[len(update)//2]])
 
 print(valid_updates)
 
 print(sum(x[1] for x in valid_updates))
+print(sum(x[1] for x in fixed_updates))
+
 
