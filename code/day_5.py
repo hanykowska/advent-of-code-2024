@@ -34,9 +34,42 @@ print(len(input_data))
 rules = input_data[0].split("\n")
 updates = input_data[1].split("\n")
 
+rules = sorted(rules)
 rules = [rule.split("|") for rule in rules]
 rules = [[int(rule[0]), int(rule[1])] for rule in rules]
 
 updates = [update.split(",") for update in updates]
 updates = [[int(page) for page in update] for update in updates]
-print(updates)
+
+rules_dict = {}
+for rule in rules:
+    if rule[0] in rules_dict:
+        rules_dict[rule[0]].append(rule[1])
+    else:
+        rules_dict[rule[0]] = [rule[1]]
+
+
+valid_updates = []
+for i,update in enumerate(updates):
+    update_ok = 1
+    for m, val_m in enumerate(update):
+        if m == len(update)-1:
+            break
+        try:
+            if all(val_n in rules_dict[val_m] for val_n in update[m+1:]):
+                pass
+                #no change needed, the update is ok
+            else:
+                update_ok = 0
+                break
+        except KeyError:
+            update_ok = 0
+            break
+        
+    if update_ok:
+        valid_updates.append([i,update[len(update)//2]])
+
+print(valid_updates)
+
+print(sum(x[1] for x in valid_updates))
+
