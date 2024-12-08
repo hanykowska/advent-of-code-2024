@@ -1,16 +1,25 @@
 import re
-import pandas as pd
+import os
 
-input_data = """....#.....
-.........#
-..........
-..#.......
-.......#..
-..........
-.#..^.....
-........#.
-#.........
-......#..."""
+input_name = "input_6.txt"
+input_path = "inputs/" + input_name
+# in macOS or pycharm, ".." is needed to get out of "code" directory,
+# in Windows or VSCode, the starting point is the repository directory
+
+file = open(os.path.abspath(input_path), "r")
+input_data = file.read()
+file.close()
+
+# input_data = """....#.....
+# .........#
+# ..........
+# ..#.......
+# .......#..
+# ..........
+# .#..^.....
+# ........#.
+# #.........
+# ......#..."""
 
 
 input_data = input_data.splitlines()
@@ -30,30 +39,30 @@ def go_up(map_list, position):
         map_list[y] = map_list[y][:x] +  "X" + map_list[y][x+1:]
         count += 1
         y -= 1
-    if y==0:
-        return count, None, None, map_list
+        if y==0:
+            return count, None, None, map_list
     return count, (x,y), ">", map_list
 
 def go_down(map_list, position):
     x, y = position
     count = 0
-    while y+1 <= len(map_list) and map_list[y+1][x] != "#":
+    while y+1 < len(map_list) and map_list[y+1][x] != "#":
         map_list[y] = map_list[y][:x] +  "X" + map_list[y][x+1:]
         count += 1
         y += 1
-    if y+1 == len(map_list):
-        return count, None, None, map_list
+        if y == len(map_list)-1:
+            return count, None, None, map_list
     return count, (x,y), "<", map_list
 
 def go_right(map_list, position):
     x, y = position
     count = 0
-    while x+1 <= len(map_list[0]) and map_list[y][x+1] != "#":
+    while x+1 < len(map_list[0]) and map_list[y][x+1] != "#":
         map_list[y] = map_list[y][:x] +  "X" + map_list[y][x+1:]
         count += 1
         x += 1
-    if x == len(map_list[0]):
-        return count, None, None, map_list
+        if x == len(map_list[0])-1:
+            return count, None, None, map_list
     return count, (x,y), "v", map_list
 
 def go_left(map_list, position):
@@ -63,8 +72,8 @@ def go_left(map_list, position):
         map_list[y] = map_list[y][:x] +  "X" + map_list[y][x+1:]
         count += 1
         x -= 1
-    if x-1 == 0:
-        return count, None, None, map_list
+        if x == 0:
+            return count, None, None, map_list
     return count, (x,y), "^", map_list
 
 
@@ -91,10 +100,12 @@ while pos is not None:
         print("End of map")
         break
 
+cnt_new = 0
 
-print(cnt)
 for line in new_map:
-    print(line)
+    cnt_new += line.count("X")
+
+print(cnt_new + 1)
 
 
 
