@@ -10,16 +10,16 @@ file = open(os.path.abspath(input_path), "r")
 input_data = file.read()
 file.close()
 
-# input_data = """....#.....
-# .........#
-# ..........
-# ..#.......
-# .......#..
-# ..........
-# .#..^.....
-# ........#.
-# #.........
-# ......#..."""
+input_data = """....#.....
+.........#
+..........
+..#.......
+.......#..
+..........
+.#..^.....
+........#.
+#.........
+......#..."""
 
 
 input_data = input_data.splitlines()
@@ -40,7 +40,7 @@ def go_up(map_list, position):
         count += 1
         y -= 1
         if y==0:
-            return count, None, None, map_list
+            return count, (x,y), None, map_list
     return count, (x,y), ">", map_list
 
 def go_down(map_list, position):
@@ -51,7 +51,7 @@ def go_down(map_list, position):
         count += 1
         y += 1
         if y == len(map_list)-1:
-            return count, None, None, map_list
+            return count, (x,y), None, map_list
     return count, (x,y), "<", map_list
 
 def go_right(map_list, position):
@@ -62,7 +62,7 @@ def go_right(map_list, position):
         count += 1
         x += 1
         if x == len(map_list[0])-1:
-            return count, None, None, map_list
+            return count, (x,y), None, map_list
     return count, (x,y), "v", map_list
 
 def go_left(map_list, position):
@@ -73,7 +73,7 @@ def go_left(map_list, position):
         count += 1
         x -= 1
         if x == 0:
-            return count, None, None, map_list
+            return count, (x,y), None, map_list
     return count, (x,y), "^", map_list
 
 
@@ -92,11 +92,13 @@ def go_to_next_obstacle(map_list, position, direction):
 
 cnt = 1
 pos , dirn , new_map = position, direction, input_data
+data = [(position, direction)]
 while pos is not None:
     temp_cnt, pos, dirn, new_map = go_to_next_obstacle(new_map, pos, dirn)
     print(temp_cnt, pos, dirn)
     cnt += temp_cnt
-    if pos is None:
+    data.append((pos, dirn))
+    if dirn is None:
         print("End of map")
         break
 
@@ -107,5 +109,38 @@ for line in new_map:
 
 print(cnt_new + 1)
 
+obstacle = 0
+for i in range(len(data)-1):
+    if i <= 3:
+        continue
+    if data[i-1][1] == "<":
+        if data[i][0][0] < data[i-3][0][0]:
+            x,y = data[i-3][0][0]-1, data[i][0][1]
+            new_map[y] = new_map[y][:x] +  "O" + new_map[y][x+1:]
+            obstacle +=1
+    elif data[i-1][1] == "^":
+        if data[i][0][1] < data[i-3][0][1]:
+            x,y = data[i][0][0], data[i-3][0][1]-1
+            new_map[y] = new_map[y][:x] +  "O" + new_map[y][x+1:]
+            obstacle +=1
+    elif data[i-1][1] == ">":
+        if data[i][0][0] > data[i-3][0][0]:
+            x,y = data[i-3][0][0]+1, data[i][0][1]
+            new_map[y] = new_map[y][:x] +  "O" + new_map[y][x+1:]
+            obstacle +=1
+    elif data[i-1][1] == "v":
+        if data[i][0][1] > data[i-3][0][1]:
+            x,y = data[i][0][0], data[i-3][0][1]+1
+            new_map[y] = new_map[y][:x] +  "O" + new_map[y][x+1:]
+            obstacle +=1
+    elif data[i][1] == None:
+        pass
+    # todo: add extra obstacles on edges of the map
+    # todo: add extra obsactles that can go back to previously found loops
+    # todo: consider a dictionary based on the direction to find the right coordinates
 
+print(obstacle)
+
+for line in new_map:
+    print(line)
 
